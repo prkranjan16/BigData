@@ -1,0 +1,79 @@
+create table titanic(PassengerId string,
+Survived string,
+Pclass string,
+Name string,
+Sex string,
+Age string,
+SibSp string,
+Parch string,
+Ticket string,
+Fare string,
+Cabin string,
+Embarked string)
+
+
+set tableproperties(skip.header = true)
+set serdeproperties(field.delim=",")
+;
+
+
+
+CREATE TABLE my_table(a string, b string, ...)
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+WITH SERDEPROPERTIES (
+   "separatorChar" = "\t",
+   "quoteChar"     = "'",
+   "escapeChar"    = "\\"
+)  
+STORED AS TEXTFILE;
+
+#while using csv serde, mentioning delimiter is not required
+
+
+#location "/user/cloudera/titanic"
+
+LOAD DATA LOCAL INPATH '/user/cloudera/titanic/titanic.csv' OVERWRITE INTO TABLE titanic2;
+
+
+#opening hive
+beeline -u jdbc:hive2:// 192.168.0.51:10000/training_db  (beeline hive)
+
+
+show tables; (view tables)
+
+
+describe formatted (tablename); (table deatils)
+
+
+drop table (tablename); (drop table)
+
+
+hdfs dfs -ls /user/hive/warehouse (view hdfs warehouse files)
+
+
+
+#mentioning delimiters
+create table orders_new (id int, qty int, price double)
+row format delimited 
+fields terminated by ","
+;
+
+
+#show create table syntax
+show create tabble <tablename>;
+
+
+#reset encoding
+ALTER TABLE <tablename> SET serdeproperties('serialization.encoding)
+
+
+#view
+
+create view a_v
+as
+select * from a;
+
+
+
+
+

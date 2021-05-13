@@ -1,0 +1,22 @@
+
+HBase Code
+
+
+
+
+create 'exp', 'personal', 'professional'
+put 'exp', 1, 'personal:name', 'rahul'
+put 'exp', 1, 'personal:name', 'rahul'
+put 'exp', 1, 'professional:salary', '50K'
+put 'exp', 1, 'professional:job', 'CA'
+
+put 'exp', 1, 'personal:name', 'Abhi'
+put 'exp', 1, 'professional:job', 'Miner'
+
+put 'exp', 2, 'personal:name', 'Pant'
+put 'exp', 2, 'professional:job', 'Sports'
+
+scan 'exp'
+
+alter 'exp', {NAME => 'professional', TTL =>200}
+scan 'exp'

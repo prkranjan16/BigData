@@ -1,0 +1,71 @@
+wget <file location>
+
+hdfs dfs -mkdir titanic1  #creating hdfs directory
+
+hdfs dfs -put titanic.csv /user/clouders/titanic1  #placing file into required folder
+
+hdfs dfs -mv /user/hive/warehouse/titanic1/* /user/hive/warehouse/titanic2 #moving files in hdfs
+hdfs dfs -mv /user/hive/warehouse/titanic1/* /user/hive/warehouse/titanic2 #copying files in hdfs
+
+
+create table titanic(<table schema>)
+location "/user/cloudera/titanic"
+
+#Impala
+
+invalidate metadata #restore catalog
+
+#switch dynamic partitionic ON
+set hive.
+
+Note:
+try to make partition column last
+
+#only male records
+grep -i ",male" titanic.csv > titanic_m.csv
+
+grep -i for splitting the file
+use quotes to mention the filter
+
+complex splitting is done using cut and paste
+
+#inserting data into partition table from a table
+insert into titanic_p partition(pclass)
+select * from titanic;
+
+#adding values to partitioned table from a file
+load data local inpath "/home/cloudera/titanic_f.csv" into table titanic_s partition(Sex="female");
+load data local inpath "/home/cloudera/titanic_f.csv" into table titanic_s partition(Sex);
+
+
+#make partition mode as nonstrict to perform dynamic partition
+set hive.exec.dynamic.partition.mode;
+set hive.exec.dynamic.partition.mode=nonstrict;
+
+#enable paritioning
+set hive.exec.dynamic.partition = true
+
+#reading between the lines
+head -100 titanic.csv | tail -50
+
+
+#importing to sqoop with target
+sqoop import --connect jdbc:mysql://localhost:3306/retail_db --username root --password cloudera --table products --target-dir /user/cloudera/products -m 1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

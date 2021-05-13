@@ -1,0 +1,86 @@
+pig -x (local, mapreduxe, tez) #opening pig
+
+df = LOAD 'emp' USING PigStorage(',');  #loading the file
+
+dump df; #dumping output on the screen
+
+Job DAG
+
+df4 = union df,df1; #keep the schema same for both the datasets
+
+store x into 'emp_output';
+
+
+to make union of 1 dataset, create an alias and perform union.
+
+
+
+
+
+train = LOAD 'train.csv' USING PigStorage(',') as (PassengerId:chararray, Survived:chararray, Pclass:chararray, Name:chararray, Sex:chararray, Age:int, SibSp:chararray, Parch:chararray, Ticket:chararray, Fare:int, Cabin:chararray, Embarked:chararray);
+
+test = LOAD 'test.csv' USING PigStorage(',') as (PassengerId:chararray, Pclass:chararray, Name:chararray, Sex:chararray, Age:int, SibSp:chararray, Parch:chararray, Ticket:chararray, Fare:int, Cabin:chararray, Embarked:chararray);
+
+train = LOAD 'train.csv' org.apache.pig.piggybank.storage.CSVExcelStorage(',') as (PassengerId:chararray, Survived:chararray, Pclass:chararray, Name:chararray, Sex:chararray, Age:int, SibSp:chararray, Parch:chararray, Ticket:chararray, Fare:int, Cabin:chararray, Embarked:chararray);
+
+#top 10 rows
+lim_train = limit train 10;
+
+Q.1)
+avg_s = GROUP train by Survived;
+res = FOREACH avg_s GENERATE train.Survived, AVG(train.Age);
+0= 30.6061320754717
+1= 28.324137931034482
+
+
+Q.2)
+p = FILTER train by Pclass == 3;
+c = ORDER p BY Fare DESC;
+lim_fare = limit c 7;
+
+(202,0,3,Sage, Mr. Frederick,male,,8,2,,69,,S)
+(793,0,3,Sage, Miss. Stella Anna,female,,8,2,,69,,S)
+(847,0,3,Sage, Mr. Douglas Bullen,male,,8,2,,69,,S)
+(181,0,3,Sage, Miss. Constance Gladys,female,,8,2,,69,,S)
+(864,0,3,Sage, Miss. Dorothy Edith "Dolly",female,,8,2,,69,,S)
+(325,0,3,Sage, Mr. George John Jr,male,,8,2,,69,,S)
+(160,0,3,Sage, Master. Thomas Henry,male,,8,2,,69,,S)
+
+
+
+ERROR 1)
+grunt> fare = FOREACH p GENERATE MAX(train.Fare);
+2021-04-22 12:17:22,789 [main] ERROR org.apache.pig.tools.grunt.Grunt - ERROR 1045: 
+<line 12, column 26> Could not infer the matching function for org.apache.pig.builtin.MAX as multiple or none of them fit. Please use an explicit cast.
+Details at logfile: /home/cloudera/pig_1619116123529.log
+
+ERROR 2)
+grunt> fare = FOREACH p GENERATE, MAX(train.Fare);
+2021-04-22 12:17:07,997 [main] ERROR org.apache.pig.tools.grunt.Grunt - ERROR 1200: <line 12, column 25>  Syntax error, unexpected symbol at or near ','
+Details at logfile: /home/cloudera/pig_1619116123529.log
+
+
+Q.3)
+p1 = FILTER train by Pclass == 1;
+c1 = ORDER p1 BY Fare DESC;
+lim_fare1 = limit c1 3;
+
+(259,1,1,Ward, Miss. Anna,female,35,0,0,,512,,C)
+(738,1,1,Lesurer, Mr. Gustave J,male,35,0,0,,512,B101,C)
+(680,1,1,Cardeza, Mr. Thomas Drake Martinez,male,36,0,1,,512,B51 B53 B55,C)
+
+
+Q.4)
+sex = GROUP train BY Sex;
+rslt = FOREACH sex GENERATE COUNT(train);
+dump rslt;
+(577)
+(314)
+
+Q.5)
+abv = FILTER train BY Age > 40;
+abv1 = GROUP abv BY Survived;
+rs = FOREACH abv1 GENERATE COUNT(abv);
+
+
+
